@@ -29,3 +29,11 @@ packages = ["app"]
 
 [tool.crewai]
 type = "crew"
+
+[tool.dpy]
+entrypoint = "cd app && uv run fastapi dev"
+
+[dependency-groups]
+dev = [
+    "dockerpyze>=2.1.1",
+]
