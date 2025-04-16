@@ -36,4 +36,5 @@ entrypoint = "cd app && uv run fastapi dev"
 [dependency-groups]
 dev = [
     "dockerpyze>=2.1.1",
+    "tach>=0.28.5",
 ]
