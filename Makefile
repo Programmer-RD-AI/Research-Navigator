@@ -1,5 +1,4 @@
 PACKAGE_NAME := research_navigator
-# Define the app directory
 APP_DIR := app
 
 install: ## Install dependencies using uv
@@ -27,4 +26,3 @@ clean: ## Clean up build artifacts and cache files
 
 build:
 	uv run dockerpyze
-
