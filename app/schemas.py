@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
 
 
 class ResearchQuery(BaseModel):
@@ -12,10 +12,17 @@ class ResearchQuery(BaseModel):
         dict_items = tuple(frozenset(self.dict(exclude_none=True).items()))
         return hash(dict_items)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: "ResearchQuery") -> bool:
         if not isinstance(other, ResearchQuery):
             return False
         return self.dict(exclude_none=True) == other.dict(exclude_none=True)
+
+    @computed_field
+    @property
+    def context_info(self) -> str:
+        return (
+            f"\nAdditional Context: {self.query.context}" if self.query.context else ""
+        )
 
 
 class ResearchResponse(BaseModel):

@@ -10,7 +10,9 @@ class AgentInput(BaseModel):
         ...,
         description="The research query to be processed by the agent.",
     )
-    tools: list[BaseTool] | None = Field(None, description="List of tools available to the agent.")
+    tools: list[BaseTool] | None = Field(
+        None, description="List of tools available to the agent."
+    )
 
 
 class TaskInput(BaseModel):
@@ -22,7 +24,9 @@ class TaskInput(BaseModel):
         ...,
         description="The research query to be processed by the task.",
     )
-    tools: list[BaseTool] | None = Field(None, description="List of tools available to the task.")
+    tools: list[BaseTool] | None = Field(
+        None, description="List of tools available to the task."
+    )
     context: list[Task] | None = Field(
         None,
         description="List of tasks that are contextually relevant to this task.",
@@ -38,10 +42,6 @@ class TaskInput(BaseModel):
 
 
 class QuestionRelevancyResponse(BaseModel):
-    """
-    Model for question relevancy assessment response.
-    """
-
     query: str
     relevant: bool
     reasons: list[str] | None = None
