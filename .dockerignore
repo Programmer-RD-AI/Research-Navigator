@@ -18,3 +18,10 @@ coverage.xml
 .mypy_cache
 .pytest_cache
 .hypothesis
+.history/
+.venv/
+archive/
+docs/
+tests/
+ruff.toml
+Makefile
