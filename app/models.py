@@ -1,40 +1,40 @@
-from pydantic import BaseModel
-from typing import Optional, List, Dict, Any
+from crewai import Agent, Task
+from crewai.tools import BaseTool
+from pydantic import BaseModel, Field
+
+from .schemas import ResearchQuery
 
 
-class ResearchQuery(BaseModel):
-    """
-    Model for research query input.
-    """
-
-    query: str
-    context: Optional[str] = None
-    additional_params: Optional[dict] = None
-
-    def __hash__(self):
-        # Create a hash based on the immutable attributes
-        # Converting dict to tuple of frozensets to make it hashable
-        dict_items = tuple(frozenset(self.dict(exclude_none=True).items()))
-        return hash(dict_items)
-
-    def __eq__(self, other):
-        if not isinstance(other, ResearchQuery):
-            return False
-        return self.dict(exclude_none=True) == other.dict(exclude_none=True)
+class AgentInput(BaseModel):
+    query: ResearchQuery = Field(
+        ...,
+        description="The research query to be processed by the agent.",
+    )
+    tools: list[BaseTool] | None = Field(None, description="List of tools available to the agent.")
 
 
-class ResearchResponse(BaseModel):
-    """
-    Model for research query response output.
-    """
-
-    query: str
-    findings: str
-    sources: List[Dict[str, Any]] = []
-    confidence_score: float
-    related_topics: List[str]
-    processing_time: Optional[float]
-    metadata: Optional[Dict[str, Any]]
+class TaskInput(BaseModel):
+    agent: Agent = Field(
+        ...,
+        description="The agent responsible for executing the task.",
+    )
+    query: ResearchQuery = Field(
+        ...,
+        description="The research query to be processed by the task.",
+    )
+    tools: list[BaseTool] | None = Field(None, description="List of tools available to the task.")
+    context: list[Task] | None = Field(
+        None,
+        description="List of tasks that are contextually relevant to this task.",
+    )
+    output_file: str | None = Field(
+        None,
+        description="The file where the output will be saved.",
+    )
+    output_json: type[BaseModel] | None = Field(
+        None,
+        description="The JSON schema for the output of the task.",
+    )
 
 
 class QuestionRelevancyResponse(BaseModel):
@@ -44,5 +44,5 @@ class QuestionRelevancyResponse(BaseModel):
 
     query: str
     relevant: bool
-    reasons: Optional[List[str]] = None
-    suggestions: Optional[List[str]] = None
+    reasons: list[str] | None = None
+    suggestions: list[str] | None = None

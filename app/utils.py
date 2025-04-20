@@ -1,6 +1,7 @@
 import os
 from functools import lru_cache
 from logging import DEBUG, Logger, getLogger
+
 from dotenv import load_dotenv
 
 

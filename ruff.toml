@@ -1,0 +1,116 @@
+# ruff.toml for Python 3.12 FastAPI Project with Google Docstrings
+
+# --- Core Settings ---
+
+# Set line length to 120 characters
+line-length = 120
+
+# Target Python 3.12
+target-version = "py312"
+
+# Exclude common directories and potentially Lambda/Serverless build artifacts
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    ".serverless", # If using Serverless Framework
+    ".aws-sam",   # If using AWS SAM
+    "cdk.out",    # If using AWS CDK
+]
+
+# --- Formatter Configuration ---
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
+# --- Linter Settings ---
+[lint]
+select = ["ALL"]
+
+# Ignore specific rules or rule categories.
+# Now enabling ANN (annotations) and C90 (complexity).
+# Docstring (D) rules are enabled via ALL, with specific ignores below.
+ignore = [
+    # --- Categories to Ignore ---
+    "DJ",   # django specific rules (Not needed for FastAPI)
+    "EXE",  # flake8-executable (Checks for shebangs, etc.)
+    "T10",  # debugger imports (like `import pdb`)
+    "S",    # flake8-bandit (Security rules - enable selectively if needed, can be noisy)
+
+    # --- Specific Rules to Ignore ---
+    "D100", # Missing docstring in public module
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+
+    # Docstring Ignores (Specific annoying ones for Google style):
+    "D401",   # First line should be in imperative mood (e.g., "Return" vs "Returns") - Google style often uses 3rd person.
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Remove whitespace after opening quotes
+
+    # Other specific ignores:
+    "E402",   # Module level import not at top of file (can conflict with local imports needed after setup)
+    "TRY003", # Avoid specifying long messages outside the exception class
+    "TD002",  # Missing author in TODO
+    "TD003",  # Missing issue link or ticket in TODO
+    "FIX002", # Line contains FIXME
+    "RET504", # Unnecessary variable assignment before `return` statement
+    "PGH004", # Use specific rule codes in noqa directives (Good practice, but can be verbose)
+    "INP001", # Implicit namespace package (Fine if intended, add __init__.py if not)
+    "COM812", # Missing trailing comma (Conflicts with formatter)
+    "TRY",
+    "ANN401",
+    "G004",
+]
+
+# Allow autofix for all enabled rules (when --fix is provided)
+fixable = ["ALL"]
+unfixable = []
+
+# --- Rule-Specific Configurations ---
+
+[lint.isort]
+# Define your project's root package(s) as first-party
+known-first-party = ["app"]
+
+[lint.mccabe]
+# Set max complexity threshold (C90 rules are now enabled)
+max-complexity = 10
+
+[lint.pydocstyle]
+# Enforce Google-style docstrings
+convention = "google"
+
+# --- Per-File Ignores ---
+[lint.per-file-ignores]
+"__init__.py" = [
+    "F401", # Allow unused imports in __init__.py for re-exporting
+    "D104", # Allow missing docstrings in public packages (__init__.py)
+]
+
+"tests/**/*.py" = [
+    "S101",    # Allow `assert` statements in tests
+    "D10",     # Allow missing docstrings in tests (D100, D101, D102, D103)
+    "ANN",     # Allow missing type hints in tests
+]

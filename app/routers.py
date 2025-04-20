@@ -1,7 +1,9 @@
-from fastapi import APIRouter
-from .crew.crew import get_crew
-from .models import ResearchQuery, ResearchResponse
 import time
+
+from fastapi import APIRouter
+
+from .crew.crew import get_crew
+from .schemas import ResearchQuery, ResearchResponse
 
 router = APIRouter(prefix="/api/v1", tags=["api"])
 
