@@ -39,7 +39,7 @@ def get_research_agent(
         Your methodology involves exploring diverse, credible sources to build a thorough understanding of the research topic: '{query.query}'{context_info}. 
         You meticulously document sources for all gathered information. You are allowed to delegate tasks like searching and retrieving information.""",
         verbose=AGENT_VERBOSE,
-        allow_delegation=True, # Research agent can delegate searching/retrieving
+        allow_delegation=True,  # Research agent can delegate searching/retrieving
         tools=tools or [],
     )
 
@@ -78,7 +78,7 @@ def get_retrieval_agent(
         You prioritize accuracy and source integrity. Critically, if a search yields no relevant results, you report this outcome truthfully and do *not* generate or hallucinate information. 
         All retrieved data *must* be accompanied by its source.""",
         verbose=AGENT_VERBOSE,
-        allow_delegation=False, # Should execute specific retrieval tasks based on queries
+        allow_delegation=False,  # Should execute specific retrieval tasks based on queries
         tools=tools or [],
     )
 

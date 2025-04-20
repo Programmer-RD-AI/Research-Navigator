@@ -57,9 +57,7 @@ class QdrantVectorSearchTool(BaseTool):
     openai_client: Any = None  # Added for lazy initialization
     openai_async_client: Any = None  # Added for lazy initialization
     name: str = "QdrantVectorSearchTool"
-    description: str = (
-        "A tool to search the Qdrant database for relevant information on internal documents."
-    )
+    description: str = "A tool to search the Qdrant database for relevant information on internal documents."
     args_schema: Type[BaseModel] = QdrantToolSchema
     query: Optional[str] = None
     filter_by: Optional[str] = None
