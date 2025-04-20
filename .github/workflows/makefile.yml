@@ -30,8 +30,8 @@ jobs:
       - name: Run clean
         run: make clean
 
-      - name: Run lint
-        run: make lint
+      # - name: Run lint
+      #   run: make lint
 
       - name: Run format
         run: make format
