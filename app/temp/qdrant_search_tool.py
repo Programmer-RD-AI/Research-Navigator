@@ -56,9 +56,7 @@ class QdrantVectorSearchTool(BaseTool):
     openai_client: Any = None  # Added for lazy initialization
     openai_async_client: Any = None  # Added for lazy initialization
     name: str = "QdrantVectorSearchTool"
-    description: str = (
-        "A tool to search the Qdrant database for relevant information on internal documents."
-    )
+    description: str = "A tool to search the Qdrant database for relevant information on internal documents."
     args_schema: type[BaseModel] = QdrantToolSchema
     query: str | None = None
     filter_by: str | None = None
@@ -132,11 +130,7 @@ class QdrantVectorSearchTool(BaseTool):
         # Create filter if filter parameters are provided
         search_filter = None
         if filter_by and filter_value:
-            search_filter = Filter(
-                must=[
-                    FieldCondition(key=filter_by, match=MatchValue(value=filter_value))
-                ]
-            )
+            search_filter = Filter(must=[FieldCondition(key=filter_by, match=MatchValue(value=filter_value))])
 
         # Search in Qdrant using the built-in query method
         query_vector = (
@@ -220,17 +214,11 @@ class QdrantVectorSearchTool(BaseTool):
         # Create filter if filter parameters are provided
         search_filter = None
         if filter_by and filter_value:
-            search_filter = Filter(
-                must=[
-                    FieldCondition(key=filter_by, match=MatchValue(value=filter_value))
-                ]
-            )
+            search_filter = Filter(must=[FieldCondition(key=filter_by, match=MatchValue(value=filter_value))])
 
         # Search in Qdrant using the built-in query method
         query_vector = (
-            await self._vectorize_query_async(
-                query, embedding_model="text-embedding-3-large"
-            )
+            await self._vectorize_query_async(query, embedding_model="text-embedding-3-large")
             if not self.custom_embedding_fn
             else self.custom_embedding_fn(query)
         )
@@ -255,9 +243,7 @@ class QdrantVectorSearchTool(BaseTool):
 
         return json.dumps(results, indent=2)
 
-    async def _vectorize_query_async(
-        self, query: str, embedding_model: str
-    ) -> list[float]:
+    async def _vectorize_query_async(self, query: str, embedding_model: str) -> list[float]:
         """Default async vectorization function with openai.
 
         Args:
