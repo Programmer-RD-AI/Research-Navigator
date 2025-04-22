@@ -1,6 +1,5 @@
 from .utils import get_env_variable
 
-serper_dev_tool_config = {"save_file": True, "n_results": 5}
 qdrant_vector_search_tool_config = {
     "collection_name": "research",
     "limit": 5,
@@ -10,3 +9,5 @@ qdrant_vector_search_tool_config = {
 }
 AGENT_VERBOSE = True
 CREW_VERBOSE = True
+tavily_search_tool_config = {}
+tavily_extractor_tool_config = {}

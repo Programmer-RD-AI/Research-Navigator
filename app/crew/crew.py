@@ -20,7 +20,11 @@ from .tasks import (
     get_summarizing_task,
     get_web_search_results_task,
 )
-from .tools import get_qdrant_vector_search_tool, get_server_dev_tool
+from .tools import (
+    get_qdrant_vector_search_tool,
+    get_tavily_extractor_tool,
+    get_tavily_search_tool,
+)
 
 
 @traceable(run_type="crew")
@@ -35,31 +39,35 @@ def get_research_crew(query: ResearchQuery) -> Crew:
         Crew: A configured crew instance ready for research tasks.
     """
     # Initialize tools
-    serper_tool = get_server_dev_tool()
+    tavily_extractor_tool = get_tavily_extractor_tool()
+    tavily_search_tool = get_tavily_search_tool()
     qdrant_tool = get_qdrant_vector_search_tool()
 
     # Initialize agents with appropriate tools
     relevancy_agent = get_relevancy_agent(AgentInput(query=query))
-    research_agent = get_research_agent(AgentInput(query=query, tools=[serper_tool]))
+    research_agent = get_research_agent(AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool]))
     query_agent = get_query_agent(AgentInput(query=query))
     retrieval_agent = get_retrieval_agent(
-        AgentInput(query=query, tools=[serper_tool, qdrant_tool])
+        AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool, qdrant_tool])
     )
     synthesizer_agent = get_synthesizer_agent(AgentInput(query=query))
 
     # Initialize tasks with assigned agents
-    question_relevancy_task = get_question_relevancy_task(
-        TaskInput(relevancy_agent, query)
-    )
+    question_relevancy_task = get_question_relevancy_task(TaskInput(relevancy_agent, query))
     research_approach_task = get_research_approach_creation_task(
-        TaskInput(research_agent, query, [serper_tool])
+        TaskInput(research_agent, query, [tavily_extractor_tool, tavily_search_tool])
     )
     search_query_task = get_search_query_generation_task(TaskInput(query_agent, query))
     rag_retrieval_task = get_rag_retrieval_results_task(
         TaskInput(retrieval_agent, query, [qdrant_tool], [search_query_task])
     )
     web_search_task = get_web_search_results_task(
-        TaskInput(retrieval_agent, query, [serper_tool], [search_query_task])
+        TaskInput(
+            retrieval_agent,
+            query,
+            [tavily_extractor_tool, tavily_search_tool],
+            [search_query_task],
+        )
     )
     keep_relevant_data_task = get_keep_relevant_data_task(
         TaskInput(relevancy_agent, query, [], [rag_retrieval_task, web_search_task])
