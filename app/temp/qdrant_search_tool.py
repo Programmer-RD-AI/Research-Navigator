@@ -97,7 +97,7 @@ class QdrantVectorSearchTool(BaseTool):
             ):
                 import subprocess
 
-                subprocess.run(["uv", "add", "qdrant-client"], check=True)
+                subprocess.run(["/usr/bin/uv", "add", "qdrant-client"], check=True)
             else:
                 raise ImportError(
                     "The 'qdrant-client' package is required to use the QdrantVectorSearchTool. "
