@@ -1,17 +1,17 @@
 from crewai import Crew
 from langsmith import traceable
 
-from ..config import CREW_VERBOSE
-from ..models import AgentInput, TaskInput
-from ..schemas import ResearchQuery
-from .agents import (
+from app.config import CREW_VERBOSE
+from app.models import AgentInput, TaskInput
+from app.schemas import ResearchQuery, ResearchResponse
+from app.crew.agents import (
     get_query_agent,
     get_relevancy_agent,
     get_research_agent,
     get_retrieval_agent,
     get_synthesizer_agent,
 )
-from .tasks import (
+from app.crew.tasks import (
     get_keep_relevant_data_task,
     get_question_relevancy_task,
     get_rag_retrieval_results_task,
@@ -20,7 +20,7 @@ from .tasks import (
     get_summarizing_task,
     get_web_search_results_task,
 )
-from .tools import (
+from app.crew.tools import (
     get_qdrant_vector_search_tool,
     get_tavily_extractor_tool,
     get_tavily_search_tool,
@@ -45,39 +45,61 @@ def get_research_crew(query: ResearchQuery) -> Crew:
 
     # Initialize agents with appropriate tools
     relevancy_agent = get_relevancy_agent(AgentInput(query=query))
-    research_agent = get_research_agent(AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool]))
+    research_agent = get_research_agent(
+        AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool])
+    )
     query_agent = get_query_agent(AgentInput(query=query))
     retrieval_agent = get_retrieval_agent(
-        AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool, qdrant_tool])
+        AgentInput(
+            query=query, tools=[tavily_extractor_tool, tavily_search_tool, qdrant_tool]
+        )
     )
     synthesizer_agent = get_synthesizer_agent(AgentInput(query=query))
 
     # Initialize tasks with assigned agents
-    question_relevancy_task = get_question_relevancy_task(TaskInput(relevancy_agent, query))
-    research_approach_task = get_research_approach_creation_task(
-        TaskInput(research_agent, query, [tavily_extractor_tool, tavily_search_tool])
+    question_relevancy_task = get_question_relevancy_task(
+        TaskInput(agent=relevancy_agent, query=query)
     )
-    search_query_task = get_search_query_generation_task(TaskInput(query_agent, query))
+    research_approach_task = get_research_approach_creation_task(
+        TaskInput(
+            agent=research_agent,
+            query=query,
+            tools=[tavily_extractor_tool, tavily_search_tool],
+        )
+    )
+    search_query_task = get_search_query_generation_task(
+        TaskInput(agent=query_agent, query=query)
+    )
     rag_retrieval_task = get_rag_retrieval_results_task(
-        TaskInput(retrieval_agent, query, [qdrant_tool], [search_query_task])
+        TaskInput(
+            agent=retrieval_agent,
+            query=query,
+            tools=[qdrant_tool],
+            context=[search_query_task],
+        )
     )
     web_search_task = get_web_search_results_task(
         TaskInput(
-            retrieval_agent,
-            query,
-            [tavily_extractor_tool, tavily_search_tool],
-            [search_query_task],
+            agent=retrieval_agent,
+            query=query,
+            tools=[tavily_extractor_tool, tavily_search_tool],
+            context=[search_query_task],
         )
     )
     keep_relevant_data_task = get_keep_relevant_data_task(
-        TaskInput(relevancy_agent, query, [], [rag_retrieval_task, web_search_task])
+        TaskInput(
+            agent=relevancy_agent,
+            query=query,
+            tools=[],
+            context=[rag_retrieval_task, web_search_task],
+        )
     )
     summarizing_task = get_summarizing_task(
         TaskInput(
-            synthesizer_agent,
-            query,
-            [],
-            [
+            agent=synthesizer_agent,
+            query=query,
+            tools=[],
+            context=[
                 question_relevancy_task,
                 research_approach_task,
                 search_query_task,
@@ -85,6 +107,7 @@ def get_research_crew(query: ResearchQuery) -> Crew:
                 web_search_task,
                 keep_relevant_data_task,
             ],
+            response_pydantic=ResearchResponse,  # Add response_pydantic to the summarizing_task
         )
     )
 

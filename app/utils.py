@@ -1,14 +1,14 @@
 import os
 from functools import lru_cache
-from logging import DEBUG, Logger, getLogger
+from logging import Logger
 
 from dotenv import load_dotenv
 
 
 @lru_cache
 def get_logger() -> Logger:
-    logger = getLogger()
-    logger.setLevel(DEBUG)
+    from loguru import logger
+
     return logger
 
 

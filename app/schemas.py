@@ -20,7 +20,7 @@ class ResearchQuery(BaseModel):
     @computed_field
     @property
     def context_info(self) -> str:
-        return f"\nAdditional Context: {self.query.context}" if self.query.context else ""
+        return f"\nAdditional Context: {self.context}" if self.context else ""
 
 
 class ResearchResponse(BaseModel):

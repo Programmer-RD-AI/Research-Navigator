@@ -10,7 +10,9 @@ class AgentInput(BaseModel):
         ...,
         description="The research query to be processed by the agent.",
     )
-    tools: list[BaseTool] | None = Field(None, description="List of tools available to the agent.")
+    tools: list[BaseTool] | None = Field(
+        None, description="List of tools available to the agent."
+    )
 
 
 class TaskInput(BaseModel):
@@ -22,7 +24,9 @@ class TaskInput(BaseModel):
         ...,
         description="The research query to be processed by the task.",
     )
-    tools: list[BaseTool] | None = Field(None, description="List of tools available to the task.")
+    tools: list[BaseTool] | None = Field(
+        None, description="List of tools available to the task."
+    )
     context: list[Task] | None = Field(
         None,
         description="List of tasks that are contextually relevant to this task.",
@@ -34,6 +38,10 @@ class TaskInput(BaseModel):
     output_json: type[BaseModel] | None = Field(
         None,
         description="The JSON schema for the output of the task.",
+    )
+    response_pydantic: type[BaseModel] | None = Field(
+        None,
+        description="The Pydantic model for the response of the task.",
     )
 
 
