@@ -2,7 +2,7 @@
 name = "research_navigator"
 version = "0.1.0"
 description = "Research-Navigator using crewAI"
-authors = [{ name = "Your Name", email = "you@example.com" }]
+authors = [{ name = "Ranuga Gamage", email = "go2ranuga.com" }]
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "crewai[tools]>=0.108.0,<1.0.0",
