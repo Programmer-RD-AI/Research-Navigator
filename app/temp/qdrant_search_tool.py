@@ -109,7 +109,7 @@ class QdrantVectorSearchTool(BaseTool):
             ):
                 import subprocess
 
-                subprocess.run(["uv", "add", "qdrant-client"], check=True)
+                subprocess.run(["/usr/bin/uv", "add", "qdrant-client"], check=True)
             else:
                 # Define error messages as constants
                 qdrant_client_pkg_required_error_msg = (
