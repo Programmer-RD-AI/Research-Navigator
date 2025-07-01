@@ -45,21 +45,15 @@ def get_research_crew(query: ResearchQuery) -> Crew:
 
     # Initialize agents with appropriate tools
     relevancy_agent = get_relevancy_agent(AgentInput(query=query))
-    research_agent = get_research_agent(
-        AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool])
-    )
+    research_agent = get_research_agent(AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool]))
     query_agent = get_query_agent(AgentInput(query=query))
     retrieval_agent = get_retrieval_agent(
-        AgentInput(
-            query=query, tools=[tavily_extractor_tool, tavily_search_tool, qdrant_tool]
-        )
+        AgentInput(query=query, tools=[tavily_extractor_tool, tavily_search_tool, qdrant_tool])
     )
     synthesizer_agent = get_synthesizer_agent(AgentInput(query=query))
 
     # Initialize tasks with assigned agents
-    question_relevancy_task = get_question_relevancy_task(
-        TaskInput(agent=relevancy_agent, query=query)
-    )
+    question_relevancy_task = get_question_relevancy_task(TaskInput(agent=relevancy_agent, query=query))
     research_approach_task = get_research_approach_creation_task(
         TaskInput(
             agent=research_agent,
@@ -67,9 +61,7 @@ def get_research_crew(query: ResearchQuery) -> Crew:
             tools=[tavily_extractor_tool, tavily_search_tool],
         )
     )
-    search_query_task = get_search_query_generation_task(
-        TaskInput(agent=query_agent, query=query)
-    )
+    search_query_task = get_search_query_generation_task(TaskInput(agent=query_agent, query=query))
     rag_retrieval_task = get_rag_retrieval_results_task(
         TaskInput(
             agent=retrieval_agent,
